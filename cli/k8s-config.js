@@ -33,7 +33,7 @@ const createApiWithDbConfig = (serviceName, service) => {
     service: serviceName,
     path: createConfigPath(serviceName),
     image: `${process.env.COMPOSE_PROJECT_NAME}_${serviceName}:${process.env.VERSION}`,
-    dbHost: `${serviceName}-db-srv`,
+    dbHost: `${serviceName}-${service.database.type}-srv`,
     dbPort: service.database.port,
     dbName: `${serviceName}_db`,
     dbUser: `${serviceName}_dbu`,
