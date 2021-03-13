@@ -1,0 +1,29 @@
+{
+  "services": {
+    "auth": {
+      "type": "api",
+      "port": 3000,
+      "env": {
+        "ENV_TEST": "test env var",
+        "ENV_TEST2": "test env var"
+      },
+      "database": {
+        "type": "mongo",
+        "port": 27017,
+        "image": "mongo:4.4",
+        "mountPath": "/data/db",
+        "env": {
+          "ENV_1": "Y",
+          "ENV_2": "ddfsfsdfsdfsdfds",
+          "ENV_3": "Developer"
+        }
+      }
+    }
+  },
+  "secrets": [
+    {
+      "key": "JWT_SECRET",
+      "value": "a secret here"
+    }
+  ]
+}

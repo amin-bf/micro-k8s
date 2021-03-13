@@ -1,0 +1,7 @@
+node_modules
+.history
+.env
+skaffold.yml
+docker-compose.yml
+common
+config.json

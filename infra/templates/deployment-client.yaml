@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{service}}-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{service}}
+  template:
+    metadata:
+      labels:
+        app: {{service}}
+    spec:
+{{security}}      
+      containers:
+        - name: {{service}}
+          image: {{image}}
+{{env}}          
+          volumeMounts:
+            - mountPath: /usr/src/{{service}}
+              name: {{service}}-vol
+      volumes:
+        - name: {{service}}-vol
+          hostPath:
+            path: {{path}}
+            type: DirectoryOrCreate

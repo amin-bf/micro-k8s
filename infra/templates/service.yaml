@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{service}}-srv
+spec:
+  selector:
+    app: {{service}}
+  type: ClusterIP
+  ports:
+    - name: {{service}}
+      protocol: TCP
+      port: {{port}}
+      targetPort: {{port}}

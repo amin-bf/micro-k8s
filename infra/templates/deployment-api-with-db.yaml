@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{service}}-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{service}}
+  template:
+    metadata:
+      labels:
+        app: {{service}}
+    spec:
+{{security}}      
+      containers:
+        - name: {{service}}
+          image: {{image}}
+          env:
+{{env}}          
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            - name: NATS_CLUSTER_ID
+              value: tick8
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name  
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{app}}-secrets
+                  key: JWT_SECRET
+            - name: DB_HOST
+              value: "{{dbHost}}"        
+            - name: DB_PORT
+              value: "{{dbPort}}"        
+            - name: DB_NAME
+              value: "{{dbName}}"        
+            - name: DB_USER
+              value: "{{dbUser}}"        
+            - name: DB_PASSWORD
+              value: "{{dbPassword}}"        
+          volumeMounts:
+            - mountPath: /usr/src/{{service}}
+              name: {{service}}-vol
+      volumes:
+        - name: {{service}}-vol
+          hostPath:
+            path: {{path}}
+            type: DirectoryOrCreate
