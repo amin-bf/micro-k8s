@@ -26,7 +26,7 @@ exports.makeServiceDirectories = services => {
 
 exports.createDockerFile = (serviceName, service) => {
   const content = `
-FROM node:12-alpine
+FROM ${service.image}
 WORKDIR /usr/src/${serviceName}
 CMD ["npm", "run", "${
     service.type === "client" && process.env.ENV === "development"
