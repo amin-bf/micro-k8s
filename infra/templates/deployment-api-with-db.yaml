@@ -19,9 +19,9 @@ spec:
           env:
 {{env}}          
             - name: NATS_URL
-              value: 'http://nats-srv:4222'
+              value: 'http://{{app}}-nats-srv:4222'
             - name: NATS_CLUSTER_ID
-              value: tick8
+              value: {{app}}
             - name: NATS_CLIENT_ID
               valueFrom:
                 fieldRef:
