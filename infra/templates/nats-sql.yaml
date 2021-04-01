@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{app}}-nats-db-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nats-db
+  template:
+    metadata:
+      labels:
+        app: nats-db
+    spec:
+      containers:
+        - name: nats
+          image: woahbase/alpine-mysql:x86_64
+          env:
+            - name: MYSQL_ROOT_PWD
+              value: "{{dbPassword}}"
+            - name: MYSQL_USER
+              value: "nats_dbu"  
+            - name: MYSQL_USER_PWD
+              value: "{{dbPassword}}"
+            - name: MYSQL_USER_DB
+              value: "nats_db"
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: nats-db-vol
+      volumes:
+        - name: nats-db-vol
+          hostPath:
+            path: {{path}}
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{app}}-nats-db-srv
+spec:
+  selector:
+    app: nats-db
+  type: ClusterIP
+  ports:
+    - name: mysql
+      protocol: TCP
+      port: 3306
+      targetPort: 3306
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{app}}-nats-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nats
+  template:
+    metadata:
+      labels:
+        app: nats
+    spec:
+      containers:
+        - name: nats
+          image: nats-streaming:0.17.0
+          args:
+            [
+              "-p",
+              "4222",
+              "-m",
+              "8222",
+              "-hbi",
+              "5s",
+              "-hbt",
+              "5s",
+              "-hbf",
+              "2",
+              "-SD",
+              "-cid",
+              "{{cluster}}",
+              "-st",
+              "SQL",
+              "--sql_driver",
+              "mysql",
+              "--sql_source",
+              "mysql://nats_dbu:{{dbPassword}}@{{app}}-nats-db-srv/nats_db"
+            ]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{app}}-nats-srv
+spec:
+  selector:
+    app: nats
+  type: ClusterIP
+  ports:
+    - name: client
+      protocol: TCP
+      port: 4222
+      targetPort: 4222
+    - name: monitoring
+      protocol: TCP
+      port: 8222
+      targetPort: 8222

@@ -22,7 +22,8 @@ const {
 const {
   makeServiceDirectories,
   createDockerComposeFile,
-  createDockerFile
+  createDockerFile,
+  makeNatsDirectory
 } = require("./cli/services")
 
 const { runLiveCommand, runCommand } = require("./cli/system")
@@ -125,7 +126,7 @@ const deploymentFiles = () => {
 
 const dockerFiles = () => {
   makeServiceDirectories(services)
-
+  makeNatsDirectory()
   Object.keys(services).forEach(key => {
     createDockerFile(key, services[key])
   })

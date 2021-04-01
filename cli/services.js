@@ -24,6 +24,12 @@ exports.makeServiceDirectories = services => {
   })
 }
 
+exports.makeNatsDirectory = () => {
+  fs.mkdirSync(path.join(__dirname, "..", "src", "nats-db"), {
+    recursive: true
+  })
+}
+
 exports.createDockerFile = (serviceName, service) => {
   const content = `
 FROM ${service.image}

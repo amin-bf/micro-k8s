@@ -109,7 +109,9 @@ const createDbConfig = (serviceName, service, env) => {
 const createNatsConfig = () => {
   const data = {
     cluster: process.env.COMPOSE_PROJECT_NAME,
-    app: process.env.COMPOSE_PROJECT_NAME
+    app: process.env.COMPOSE_PROJECT_NAME,
+    path: createConfigPath("nats-db"),
+    dbPassword: process.env.DB_PASSWORD
   }
 
   // Client Start
