@@ -111,7 +111,29 @@ const createNatsConfig = () => {
     cluster: process.env.COMPOSE_PROJECT_NAME,
     app: process.env.COMPOSE_PROJECT_NAME,
     path: createConfigPath("nats-db"),
-    dbPassword: process.env.DB_PASSWORD
+    dbPassword: process.env.DB_PASSWORD,
+    datastoreArgs:
+      process.env.ENV === "development"
+        ? ""
+        : `
+              "-st",
+              "FILE",
+              "--dir",
+              "datastore",
+`,
+    datastoreVolumes:
+      process.env.ENV === "development"
+        ? ""
+        : `
+          volumeMounts:
+          - mountPath: /datastore
+            name: nats-db-vol
+      volumes:
+      - name: nats-db-vol
+        hostPath:
+          path: ${createConfigPath("nats-db")}
+          type: DirectoryOrCreate
+    `
   }
 
   // Client Start

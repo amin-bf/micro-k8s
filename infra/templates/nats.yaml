@@ -30,19 +30,9 @@ spec:
               "-SD",
               "-cid",
               "{{cluster}}",
-              "-st",
-              "FILE",
-              "--dir",
-              "datastore",
+{{datastoreArgs}}
             ]
-          volumeMounts:
-            - mountPath: /datastore
-              name: nats-db-vol
-      volumes:
-        - name: nats-db-vol
-          hostPath:
-            path: {{path}}
-            type: DirectoryOrCreate
+{{datastoreVolumes}}
 ---
 apiVersion: v1
 kind: Service
